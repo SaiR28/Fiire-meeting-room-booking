@@ -126,4 +126,5 @@ def init_db():
 if __name__ == '__main__':
     if not os.path.exists('instance/bookings.db'):
         init_db()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)
+
