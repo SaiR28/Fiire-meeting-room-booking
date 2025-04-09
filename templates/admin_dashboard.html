@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1 class="text-center mb-4">Admin Dashboard</h1>
+
+<div class="d-flex flex-column flex-md-row justify-content-between mb-3">
+    <h3>Bookings Overview</h3>
+    <a href="{{ url_for('index') }}" class="btn btn-primary mt-2 mt-md-0">Back to Booking</a>
+</div>
+
+{% for date_str in dates %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">{{ date_str.strftime('%A, %B %d, %Y') }}</h5>
+    </div>
+    <div class="card-body">
+        {% set bookings = bookings_by_date[date_str.strftime('%Y-%m-%d')] %}
+        {% if bookings %}
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Time Slot</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Company</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking.time_slot }}</td>
+                            <td>{{ booking.user_name }}</td>
+                            <td>{{ booking.user_email }}</td>
+                            <td>{{ booking.user_phone }}</td>
+                            <td>{{ booking.user_company }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-center mb-0">No bookings for this day</p>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

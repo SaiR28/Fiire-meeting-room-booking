@@ -1,0 +1,87 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1 class="text-center mb-4">Meeting Room Booking</h1>
+
+<div class="card">
+    <div class="card-header">
+        <h4>Book a Meeting Room</h4>
+    </div>
+    <div class="card-body">
+        <form action="{{ url_for('book') }}" method="post">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" class="form-control" id="phone" name="phone" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="company">Company</label>
+                    <input type="text" class="form-control" id="company" name="company" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="date">Select Date</label>
+                    <select class="form-control" id="date" name="date" required>
+                        <option value="">-- Select a date --</option>
+                        {% for date in dates %}
+                        <option value="{{ date }}">{{ date.strftime('%A, %B %d, %Y') }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="time_slot">Select Time Slot</label>
+                    <select class="form-control" id="time_slot" name="time_slot" required>
+                        <option value="">-- Select a time slot --</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Book Now</button>
+        </form>
+        
+    </div>
+    <div class="card-footer text-muted">
+        <p>Notes:</p>
+        <ul>
+            <li>You can book a maximum of 2 slots</li>
+            <li>Bookings are available for the next 7 days (excluding Sundays)</li>
+            <li>Each slot is for 1 hour</li>
+        </ul>
+    </div>
+</div>
+
+<div class="text-center mt-3">
+    <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+</div>
+<script>
+    const availableSlots = {{ available_time_slots_per_date | tojson }};
+    const dateSelect = document.getElementById('date');
+    const timeSlotSelect = document.getElementById('time_slot');
+
+    dateSelect.addEventListener('change', function () {
+        const selectedDate = this.value;
+        const slots = availableSlots[selectedDate] || [];
+
+        // Clear current options
+        timeSlotSelect.innerHTML = '<option value="">-- Select a time slot --</option>';
+
+        // Add available slots
+        slots.forEach(slot => {
+            const option = document.createElement('option');
+            option.value = slot;
+            option.textContent = slot;
+            timeSlotSelect.appendChild(option);
+        });
+    });
+</script>
+{% endblock %}
